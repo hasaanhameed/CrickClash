@@ -40,6 +40,6 @@ Thumbs.db
 # Testing / coverage
 coverage/
 
-# Personal docs (not part of the codebase)
-Hasaan_Resume.pdf
-JD .docx
+# Local-only project notes
+CLAUDE.md
+
