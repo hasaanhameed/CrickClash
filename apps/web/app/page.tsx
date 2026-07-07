@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import AuthButtons from "../components/AuthButtons";
 
 // Mock data — will come from the API later
 const quizPacks = [
@@ -87,20 +88,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link
-              href="/login"
-              className="btn-game rounded-lg px-4 py-2 text-lg font-semibold text-foreground/90 hover:text-gold"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/register"
-              className="btn-game btn-gold font-display rounded-md px-7 py-3 text-lg text-foreground"
-            >
-              <span className="text-glow relative z-10">Register</span>
-            </Link>
-          </div>
+          <AuthButtons />
         </nav>
       </header>
 
@@ -123,13 +111,13 @@ export default function Home() {
               CRICK<span className="text-gold">CLASH</span>
             </h1>
             <p className="mt-5 max-w-md text-xl text-foreground/80">
-              Every legend. Every final. Every record.
+              Every legend. Every moment. Every record.
               <span className="text-gold"> Prove you were watching.</span>
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
-                href="/register"
+                href="#modes"
                 className="btn-game btn-gold font-display rounded-md px-10 py-4 text-2xl text-foreground"
               >
                 <span className="text-glow relative z-10">PLAY NOW</span>
