@@ -96,7 +96,7 @@ export default function Home() {
             </Link>
             <Link
               href="/register"
-              className="btn-game btn-gold rounded-md px-7 py-3 text-base font-bold tracking-wide text-foreground"
+              className="btn-game btn-gold font-display rounded-md px-7 py-3 text-lg text-foreground"
             >
               <span className="text-glow relative z-10">Sign up</span>
             </Link>
@@ -130,7 +130,7 @@ export default function Home() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
                 href="/register"
-                className="btn-game btn-gold rounded-md px-10 py-4 text-lg font-bold tracking-wide text-foreground"
+                className="btn-game btn-gold font-display rounded-md px-10 py-4 text-2xl text-foreground"
               >
                 <span className="text-glow relative z-10">PLAY NOW</span>
               </Link>
