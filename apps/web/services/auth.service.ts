@@ -1,6 +1,7 @@
 import api from "../lib/api";
 import type {
   AuthResponse,
+  CurrentUser,
   LoginPayload,
   RegisterPayload,
   User,
@@ -15,5 +16,10 @@ export async function loginUser(
   payload: LoginPayload,
 ): Promise<AuthResponse> {
   const { data } = await api.post<AuthResponse>("/auth/login", payload);
+  return data;
+}
+
+export async function getMe(): Promise<CurrentUser> {
+  const { data } = await api.get<CurrentUser>("/auth/me");
   return data;
 }

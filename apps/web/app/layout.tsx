@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Russo_One, Rubik } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "../contexts/AuthContext";
 
 const russoOne = Russo_One({
   variable: "--font-display",
@@ -29,7 +30,9 @@ export default function RootLayout({
       lang="en"
       className={`${russoOne.variable} ${rubik.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

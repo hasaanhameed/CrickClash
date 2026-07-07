@@ -17,3 +17,8 @@ export interface LoginPayload {
   username: string;
   password: string;
 }
+
+export interface CurrentUser {
+  userId: string;
+  username: string;
+}
