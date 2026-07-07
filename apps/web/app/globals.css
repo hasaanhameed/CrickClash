@@ -1,26 +1,82 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #06110b;
+  --surface: #0c1d12;
+  --surface-raised: #11291a;
+  --foreground: #f2f7f0;
+  --muted: #93a89a;
+  --pitch: #1a5c33;
+  --pitch-bright: #2e9e55;
+  --gold: #e8b53a;
+  --gold-deep: #b8860b;
+  --ember: #ff8c2e;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-muted: var(--muted);
+  --color-pitch: var(--pitch);
+  --color-pitch-bright: var(--pitch-bright);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
+  --color-ember: var(--ember);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), sans-serif;
+  letter-spacing: 0.03em;
+}
+
+/* Gold glow for headline text */
+.text-glow {
+  text-shadow:
+    0 0 18px rgba(232, 181, 58, 0.45),
+    0 0 60px rgba(232, 181, 58, 0.2);
+}
+
+/* Angled bottom edge, gives sections that esports-poster cut */
+.clip-slant {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4rem), 0 100%);
+}
+
+.clip-slant-reverse {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 4rem));
+}
+
+/* Chunky game-button press effect */
+.btn-game {
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+.btn-game:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+.btn-game:active {
+  transform: translateY(1px);
+}
+
+/* Mode/quiz card lift */
+.card-game {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+.card-game:hover {
+  transform: translateY(-6px) scale(1.015);
 }
