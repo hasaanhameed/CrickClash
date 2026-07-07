@@ -2,9 +2,23 @@
 
 import { useState } from "react";
 import AuthModal from "./AuthModal";
+import Toast from "../Toast";
+
+const successMessages: Record<"login" | "register", string> = {
+  register: "You're in! Let's clash. 🏏",
+  login: "Welcome back — dive into the action!",
+};
 
 export default function AuthButtons() {
   const [modal, setModal] = useState<"login" | "register" | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const handleSuccess = () => {
+    if (modal) {
+      setToast(successMessages[modal]);
+    }
+    setModal(null);
+  };
 
   return (
     <>
@@ -23,7 +37,15 @@ export default function AuthButtons() {
         </button>
       </div>
 
-      {modal && <AuthModal mode={modal} onClose={() => setModal(null)} />}
+      {modal && (
+        <AuthModal
+          mode={modal}
+          onClose={() => setModal(null)}
+          onSuccess={handleSuccess}
+        />
+      )}
+
+      {toast && <Toast message={toast} onDone={() => setToast(null)} />}
     </>
   );
 }

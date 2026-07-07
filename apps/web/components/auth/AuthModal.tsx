@@ -6,9 +6,10 @@ import { useAuth } from "../../hooks/useAuth";
 interface AuthModalProps {
   mode: "login" | "register";
   onClose: () => void;
+  onSuccess: () => void;
 }
 
-export default function AuthModal({ mode, onClose }: AuthModalProps) {
+export default function AuthModal({ mode, onClose, onSuccess }: AuthModalProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login, register, loading, error } = useAuth();
@@ -21,7 +22,7 @@ export default function AuthModal({ mode, onClose }: AuthModalProps) {
         : await login({ username, password });
 
     if (success) {
-      onClose();
+      onSuccess();
     }
   };
 
