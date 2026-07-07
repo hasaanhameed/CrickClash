@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 interface AuthModalProps {
   mode: "login" | "register";
@@ -10,11 +11,18 @@ interface AuthModalProps {
 export default function AuthModal({ mode, onClose }: AuthModalProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { login, register, loading, error } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: wire up to the /auth/register and /auth/login API endpoints
-    console.log(mode, { username, password });
+    const success =
+      mode === "register"
+        ? await register({ username, password })
+        : await login({ username, password });
+
+    if (success) {
+      onClose();
+    }
   };
 
   return (
@@ -69,12 +77,19 @@ export default function AuthModal({ mode, onClose }: AuthModalProps) {
             />
           </div>
 
+          {error && <p className="text-sm text-red-400">{error}</p>}
+
           <button
             type="submit"
-            className="btn-game btn-gold font-display mt-2 rounded-md px-6 py-3 text-lg text-foreground"
+            disabled={loading}
+            className="btn-game btn-gold font-display mt-2 rounded-md px-6 py-3 text-lg text-foreground disabled:opacity-60"
           >
             <span className="text-glow relative z-10">
-              {mode === "register" ? "Get Started" : "Dive Back Into Action"}
+              {loading
+                ? "..."
+                : mode === "register"
+                  ? "Get Started"
+                  : "Dive Back Into Action"}
             </span>
           </button>
         </form>
