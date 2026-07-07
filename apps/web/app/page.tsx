@@ -105,7 +105,7 @@ export default function Home() {
       </header>
 
       {/* ── Hero ────────────────────────────────────────── */}
-      <section className="clip-slant relative flex min-h-[92vh] items-center overflow-hidden">
+      <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-hero-dark">
         <Image
           src="/images/stadium.png"
           alt="Cricket stadium under floodlights"
@@ -114,18 +114,15 @@ export default function Home() {
           className="object-cover"
         />
         {/* dark overlay so text pops */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/30" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-hero-dark via-hero-dark/80 to-hero-dark/30" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-hero-dark to-transparent" />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-8 px-6 pt-24 lg:grid-cols-2">
-          <div>
-            <p className="mb-3 inline-block rounded-full border border-gold/40 bg-gold/10 px-4 py-1 text-xs font-bold uppercase tracking-widest text-gold">
-              Pakistan Cricket Quiz Arena
-            </p>
-            <h1 className="font-display text-glow text-5xl leading-tight text-foreground sm:text-6xl lg:text-7xl">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-24">
+          <div className="max-w-xl">
+            <h1 className="font-display text-glow text-6xl leading-tight text-foreground sm:text-7xl lg:text-8xl">
               CRICK<span className="text-gold">CLASH</span>
             </h1>
-            <p className="mt-4 max-w-md text-lg text-foreground/80">
+            <p className="mt-5 max-w-md text-xl text-foreground/80">
               Every legend. Every final. Every record.
               <span className="text-gold"> Prove you were watching.</span>
             </p>
@@ -137,37 +134,33 @@ export default function Home() {
               >
                 PLAY NOW
               </Link>
-              <Link
-                href="/play?guest=true"
-                className="btn-game rounded-xl border-2 border-foreground/25 bg-surface/60 px-8 py-4 font-display text-lg text-foreground backdrop-blur-sm hover:border-gold/60"
-              >
-                PLAY AS GUEST
-              </Link>
             </div>
-
-            <p className="mt-4 text-sm text-muted">
-              No account needed to try a match — sign up to keep your stats.
-            </p>
           </div>
+        </div>
 
-          {/* Mascot */}
-          <div className="relative hidden h-[420px] lg:block">
-            <Image
-              src="/images/mascot.png"
-              alt="CrickClash batsman mascot"
-              fill
-              className="object-contain object-bottom drop-shadow-[0_0_45px_rgba(232,181,58,0.25)]"
-            />
+        {/* Mascot — anchored to the bottom edge, pulled in closer to the text */}
+        <div className="pointer-events-none absolute inset-0 z-[5] hidden lg:flex">
+          <div className="mx-auto flex w-full max-w-7xl items-end justify-end px-6">
+            <div className="relative h-[88vh] w-[34rem] max-w-[42vw]">
+              {/* warm gold ambient glow behind the mascot */}
+              <div className="absolute inset-x-0 bottom-0 top-1/4 rounded-full bg-gold/30 blur-[100px]" />
+              <Image
+                src="/images/mascot.png"
+                alt="CrickClash batsman mascot"
+                fill
+                className="relative object-contain object-bottom drop-shadow-[0_0_90px_rgba(232,181,58,0.55)]"
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── Game Modes ──────────────────────────────────── */}
       <section id="modes" className="relative mx-auto max-w-7xl px-6 py-20">
-        <h2 className="font-display text-3xl text-foreground sm:text-4xl">
-          PICK YOUR <span className="text-gold">BATTLE</span>
+        <h2 className="font-display text-3xl text-ink sm:text-4xl">
+          PICK YOUR <span className="text-gold-deep">BATTLE</span>
         </h2>
-        <p className="mt-2 text-muted">
+        <p className="mt-2 text-ink-muted">
           Two ways to play. One leaderboard. Zero excuses.
         </p>
 
@@ -238,20 +231,11 @@ export default function Home() {
 
       {/* ── Quiz Packs ──────────────────────────────────── */}
       <section id="quizzes" className="clip-slant-reverse relative py-20">
-        {/* grass texture backdrop */}
-        <Image
-          src="/images/grass.png"
-          alt=""
-          fill
-          className="object-cover opacity-25"
-        />
-        <div className="absolute inset-0 bg-background/70" />
-
         <div className="relative mx-auto max-w-7xl px-6">
-          <h2 className="font-display text-3xl text-foreground sm:text-4xl">
-            QUIZ <span className="text-gold">PACKS</span>
+          <h2 className="font-display text-3xl text-ink sm:text-4xl">
+            QUIZ <span className="text-gold-deep">PACKS</span>
           </h2>
-          <p className="mt-2 text-muted">
+          <p className="mt-2 text-ink-muted">
             Curated question banks — pick an era, pick a battle.
           </p>
 
@@ -291,9 +275,9 @@ export default function Home() {
       </section>
 
       {/* ── Footer ──────────────────────────────────────── */}
-      <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-muted sm:flex-row">
-        <span className="font-display text-foreground/70">
-          CRICK<span className="text-gold">CLASH</span>
+      <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-ink-muted sm:flex-row">
+        <span className="font-display text-ink/70">
+          CRICK<span className="text-gold-deep">CLASH</span>
         </span>
         <span>Built for the fans. Har match yaad hai. 🏏</span>
       </footer>
