@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import AuthButtons from "../components/AuthButtons";
+import AuthButtons from "../components/auth/AuthButtons";
 import ScrollLink from "../components/ScrollLink";
 
 // Mock data — will come from the API later
