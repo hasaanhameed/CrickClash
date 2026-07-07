@@ -70,12 +70,12 @@ export default function Home() {
     <main className="flex-1">
       {/* ── Nav ─────────────────────────────────────────── */}
       <header className="absolute top-0 left-0 right-0 z-30">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <Link href="/" className="font-display text-2xl text-foreground">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+          <Link href="/" className="font-display text-3xl text-foreground">
             CRICK<span className="text-gold">CLASH</span>
           </Link>
 
-          <div className="hidden items-center gap-8 text-sm font-medium text-foreground/80 md:flex">
+          <div className="hidden items-center gap-10 text-base font-medium text-foreground/80 md:flex">
             <Link href="#quizzes" className="transition hover:text-gold">
               Quizzes
             </Link>
@@ -87,18 +87,18 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="btn-game rounded-lg px-4 py-2 text-sm font-semibold text-foreground/90 hover:text-gold"
+              className="btn-game rounded-lg px-4 py-2 text-base font-semibold text-foreground/90 hover:text-gold"
             >
               Log in
             </Link>
             <Link
               href="/register"
-              className="btn-game rounded-lg bg-gold px-4 py-2 text-sm font-bold text-background shadow-[0_4px_0_var(--gold-deep)]"
+              className="btn-game btn-gold rounded-md px-7 py-3 text-base font-bold tracking-wide text-foreground"
             >
-              Sign up
+              <span className="text-glow relative z-10">Sign up</span>
             </Link>
           </div>
         </nav>
@@ -130,9 +130,9 @@ export default function Home() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
                 href="/register"
-                className="btn-game rounded-xl bg-gold px-8 py-4 font-display text-lg text-background shadow-[0_6px_0_var(--gold-deep)]"
+                className="btn-game btn-gold rounded-md px-10 py-4 text-lg font-bold tracking-wide text-foreground"
               >
-                PLAY NOW
+                <span className="text-glow relative z-10">PLAY NOW</span>
               </Link>
             </div>
           </div>
