@@ -70,12 +70,12 @@ export default function Home() {
     <main className="flex-1">
       {/* ── Nav ─────────────────────────────────────────── */}
       <header className="absolute top-0 left-0 right-0 z-30">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-          <Link href="/" className="font-display text-3xl text-foreground">
+        <nav className="flex w-full items-center justify-between px-8 py-6">
+          <Link href="/" className="font-display text-4xl text-foreground">
             CRICK<span className="text-gold">CLASH</span>
           </Link>
 
-          <div className="hidden items-center gap-10 text-base font-medium text-foreground/80 md:flex">
+          <div className="hidden items-center gap-10 text-lg font-medium text-foreground/80 md:flex">
             <Link href="#quizzes" className="transition hover:text-gold">
               Quizzes
             </Link>
@@ -90,7 +90,7 @@ export default function Home() {
           <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="btn-game rounded-lg px-4 py-2 text-base font-semibold text-foreground/90 hover:text-gold"
+              className="btn-game rounded-lg px-4 py-2 text-lg font-semibold text-foreground/90 hover:text-gold"
             >
               Log in
             </Link>
@@ -98,14 +98,14 @@ export default function Home() {
               href="/register"
               className="btn-game btn-gold font-display rounded-md px-7 py-3 text-lg text-foreground"
             >
-              <span className="text-glow relative z-10">Sign up</span>
+              <span className="text-glow relative z-10">Register</span>
             </Link>
           </div>
         </nav>
       </header>
 
       {/* ── Hero ────────────────────────────────────────── */}
-      <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-hero-dark">
+      <section className="relative flex min-h-[64vh] items-center overflow-hidden bg-hero-dark">
         <Image
           src="/images/stadium.png"
           alt="Cricket stadium under floodlights"
@@ -117,7 +117,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-hero-dark via-hero-dark/80 to-hero-dark/30" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-hero-dark to-transparent" />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-24">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-20">
           <div className="max-w-xl">
             <h1 className="font-display text-glow text-6xl leading-tight text-foreground sm:text-7xl lg:text-8xl">
               CRICK<span className="text-gold">CLASH</span>
@@ -141,7 +141,7 @@ export default function Home() {
         {/* Mascot — anchored to the bottom edge, pulled in closer to the text */}
         <div className="pointer-events-none absolute inset-0 z-[5] hidden lg:flex">
           <div className="mx-auto flex w-full max-w-7xl items-end justify-end px-6">
-            <div className="relative h-[88vh] w-[34rem] max-w-[42vw]">
+            <div className="relative h-[68vh] w-[38rem] max-w-[46vw]">
               {/* warm gold ambient glow behind the mascot */}
               <div className="absolute inset-x-0 bottom-0 top-1/4 rounded-full bg-gold/30 blur-[100px]" />
               <Image
