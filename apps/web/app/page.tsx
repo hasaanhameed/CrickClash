@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import AuthButtons from "../components/AuthButtons";
+import ScrollLink from "../components/ScrollLink";
 
 // Mock data — will come from the API later
 const quizPacks = [
@@ -77,12 +78,12 @@ export default function Home() {
           </Link>
 
           <div className="hidden items-center gap-10 text-lg font-medium text-foreground/80 md:flex">
-            <Link href="#quizzes" className="transition hover:text-gold">
+            <ScrollLink targetId="quizzes" className="transition hover:text-gold">
               Quizzes
-            </Link>
-            <Link href="#modes" className="transition hover:text-gold">
+            </ScrollLink>
+            <ScrollLink targetId="quizzes" className="transition hover:text-gold">
               Game Modes
-            </Link>
+            </ScrollLink>
             <Link href="/leaderboard" className="transition hover:text-gold">
               Leaderboard
             </Link>
@@ -116,12 +117,12 @@ export default function Home() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link
-                href="#modes"
+              <ScrollLink
+                targetId="modes"
                 className="btn-game btn-gold font-display rounded-md px-10 py-4 text-2xl text-foreground"
               >
                 <span className="text-glow relative z-10">PLAY NOW</span>
-              </Link>
+              </ScrollLink>
             </div>
           </div>
         </div>
