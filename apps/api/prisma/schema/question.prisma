@@ -1,0 +1,16 @@
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Question {
+  id            String     @id @default(uuid())
+  quizPackId    String
+  quizPack      QuizPack   @relation(fields: [quizPackId], references: [id])
+  difficulty    Difficulty
+  text          String
+  options       String[]
+  correctAnswer String
+  createdAt     DateTime   @default(now())
+}

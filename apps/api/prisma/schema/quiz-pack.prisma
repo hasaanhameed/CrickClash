@@ -1,0 +1,10 @@
+model QuizPack {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  description String
+  playCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  questions   Question[]
+}
