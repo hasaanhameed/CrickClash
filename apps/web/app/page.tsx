@@ -1,18 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Flame, Swords } from "lucide-react";
 import AuthButtons from "../components/auth/AuthButtons";
 import ScrollLink from "../components/ScrollLink";
 import { getQuizPacks } from "../services/quizPack.service";
 
-// Purely visual — backend doesn't (and shouldn't) store card gradient colors
-const accentGradients = [
-  "from-emerald-800/80",
-  "from-yellow-800/70",
-  "from-teal-800/80",
-  "from-orange-900/70",
-  "from-lime-900/80",
-  "from-amber-900/70",
-];
+// Purely visual — backend doesn't (and shouldn't) store card artwork paths
+const packImages: Record<string, string> = {
+  "90s-legends": "/images/90s-legends.png",
+  "world-cup-nights": "/images/worldcup.png",
+  "psl-trivia": "/images/psl.png",
+  "pak-india-rivalry": "/images/pakvsindia.png",
+  "captains-corner": "/images/captains.png",
+  "record-breakers": "/images/records.png",
+};
 
 export default async function Home() {
   const quizPacks = await getQuizPacks();
@@ -113,7 +114,7 @@ export default async function Home() {
                 src="/images/face-off.png"
                 alt="Two batsmen facing off"
                 fill
-                className="object-cover object-top transition duration-300 group-hover:scale-105"
+                className="object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent" />
             </div>
@@ -144,7 +145,7 @@ export default async function Home() {
                 src="/images/ball.png"
                 alt="Cricket ball on fire"
                 fill
-                className="object-cover object-center transition duration-300 group-hover:scale-105"
+                className="object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent" />
             </div>
@@ -178,26 +179,41 @@ export default async function Home() {
           </p>
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {quizPacks.map((pack, index) => (
+            {quizPacks.map((pack) => (
               <Link
                 key={pack.id}
                 href={`/quiz/${pack.slug}`}
-                className="card-game group relative overflow-hidden rounded-xl border border-foreground/10 bg-surface-raised p-5 hover:border-gold/60"
+                className="card-game group relative overflow-hidden rounded-xl border border-foreground/10 bg-surface-raised hover:border-gold/60"
               >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${accentGradients[index % accentGradients.length]} to-transparent opacity-40`}
-                />
-                <div className="relative">
-                  <h3 className="font-display text-lg text-foreground">
+                <div className="relative h-40 overflow-hidden">
+                  <Image
+                    src={packImages[pack.slug]}
+                    alt={pack.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface-raised via-surface-raised/10 to-transparent" />
+                </div>
+                <div className="relative p-5">
+                  <h3 className="font-display text-glow text-2xl text-gold">
                     {pack.title}
                   </h3>
                   <p className="mt-2 min-h-10 text-sm text-foreground/65">
                     {pack.description}
                   </p>
-                  <div className="mt-4 flex items-center gap-4 text-xs text-muted">
-                    <span>🏏 {pack.questionCount} questions</span>
-                    <span>🔥 {pack.playCount.toLocaleString()} plays</span>
+                  <div className="mt-4 flex items-center gap-5 text-sm text-muted">
+                    <span className="flex items-center gap-1.5">
+                      <Swords className="h-4 w-4 text-gold" />
+                      {pack.questionCount} questions
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Flame className="h-4 w-4 text-gold" />
+                      {pack.playCount.toLocaleString()} plays
+                    </span>
                   </div>
+                  <span className="font-display absolute right-5 bottom-5 text-sm text-gold opacity-0 transition group-hover:opacity-100">
+                    EXPLORE PACK →
+                  </span>
                 </div>
               </Link>
             ))}
