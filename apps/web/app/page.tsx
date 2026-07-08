@@ -2,60 +2,21 @@ import Image from "next/image";
 import Link from "next/link";
 import AuthButtons from "../components/auth/AuthButtons";
 import ScrollLink from "../components/ScrollLink";
+import { getQuizPacks } from "../services/quizPack.service";
 
-// Mock data — will come from the API later
-const quizPacks = [
-  {
-    id: "90s-legends",
-    title: "90s Legends",
-    description: "Wasim, Waqar, Saeed Anwar — the golden generation.",
-    questions: 20,
-    plays: 4821,
-    accent: "from-emerald-800/80",
-  },
-  {
-    id: "world-cup-nights",
-    title: "World Cup Nights",
-    description: "From MCG '92 to the T20 thrillers. Relive every night.",
-    questions: 25,
-    plays: 6310,
-    accent: "from-yellow-800/70",
-  },
-  {
-    id: "psl-trivia",
-    title: "PSL Trivia",
-    description: "Franchises, finals and last-over drama since 2016.",
-    questions: 15,
-    plays: 9204,
-    accent: "from-teal-800/80",
-  },
-  {
-    id: "pak-india-rivalry",
-    title: "The Rivalry",
-    description: "Pakistan vs India — the matches that stopped time.",
-    questions: 20,
-    plays: 11876,
-    accent: "from-orange-900/70",
-  },
-  {
-    id: "captains-corner",
-    title: "Captains' Corner",
-    description: "Imran to Babar — leaders, decisions, legacies.",
-    questions: 18,
-    plays: 3542,
-    accent: "from-lime-900/80",
-  },
-  {
-    id: "record-breakers",
-    title: "Record Breakers",
-    description: "Fastest, highest, youngest — Pakistan's record books.",
-    questions: 15,
-    plays: 5127,
-    accent: "from-amber-900/70",
-  },
+// Purely visual — backend doesn't (and shouldn't) store card gradient colors
+const accentGradients = [
+  "from-emerald-800/80",
+  "from-yellow-800/70",
+  "from-teal-800/80",
+  "from-orange-900/70",
+  "from-lime-900/80",
+  "from-amber-900/70",
 ];
 
-export default function Home() {
+export default async function Home() {
+  const quizPacks = await getQuizPacks();
+
   return (
     <main className="flex-1">
       {/* ── Nav ─────────────────────────────────────────── */}
@@ -217,14 +178,14 @@ export default function Home() {
           </p>
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {quizPacks.map((pack) => (
+            {quizPacks.map((pack, index) => (
               <Link
                 key={pack.id}
-                href={`/quiz/${pack.id}`}
+                href={`/quiz/${pack.slug}`}
                 className="card-game group relative overflow-hidden rounded-xl border border-foreground/10 bg-surface-raised p-5 hover:border-gold/60"
               >
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${pack.accent} to-transparent opacity-40`}
+                  className={`absolute inset-0 bg-gradient-to-br ${accentGradients[index % accentGradients.length]} to-transparent opacity-40`}
                 />
                 <div className="relative">
                   <h3 className="font-display text-lg text-foreground">
@@ -234,8 +195,8 @@ export default function Home() {
                     {pack.description}
                   </p>
                   <div className="mt-4 flex items-center gap-4 text-xs text-muted">
-                    <span>🏏 {pack.questions} questions</span>
-                    <span>🔥 {pack.plays.toLocaleString()} plays</span>
+                    <span>🏏 {pack.questionCount} questions</span>
+                    <span>🔥 {pack.playCount.toLocaleString()} plays</span>
                   </div>
                 </div>
               </Link>
