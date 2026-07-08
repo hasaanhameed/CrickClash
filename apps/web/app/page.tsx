@@ -23,7 +23,16 @@ export default async function Home() {
       {/* ── Nav ─────────────────────────────────────────── */}
       <header className="absolute top-0 left-0 right-0 z-30">
         <nav className="flex w-full items-center justify-between px-8 py-6">
-          <Link href="/" className="font-display text-4xl text-foreground">
+          <Link
+            href="/"
+            className="font-display flex items-center gap-1 text-4xl text-foreground"
+          >
+            <Image
+              src="/images/logo.png"
+              alt=""
+              width={72}
+              height={72}
+            />
             CRICK<span className="text-gold">CLASH</span>
           </Link>
 
@@ -222,11 +231,23 @@ export default async function Home() {
       </section>
 
       {/* ── Footer ──────────────────────────────────────── */}
-      <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-ink-muted sm:flex-row">
-        <span className="font-display text-ink/70">
-          CRICK<span className="text-gold-deep">CLASH</span>
-        </span>
-        <span>Built for the fans. Har match yaad hai. 🏏</span>
+      <footer className="bg-hero-dark">
+        <div className="mx-auto max-w-7xl px-6 py-8">
+          <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
+            <span className="font-display text-glow flex items-center gap-1 text-2xl text-foreground">
+              <Image src="/images/logo.png" alt="" width={52} height={52} />
+              CRICK<span className="text-gold">CLASH</span>
+            </span>
+            <span className="text-xs text-foreground/40">
+              © {new Date().getFullYear()} CrickClash. Not affiliated with the
+              PCB or ICC.
+            </span>
+          </div>
+          <p className="mt-3 max-w-sm text-sm text-foreground/60">
+            Real-time Pakistan cricket trivia battles. Built for the fans who
+            never miss a ball.
+          </p>
+        </div>
       </footer>
     </main>
   );
