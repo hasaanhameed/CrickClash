@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Flame, Swords } from "lucide-react";
+import { BookOpen, Flame, Swords, Trophy } from "lucide-react";
 import AuthButtons from "../components/auth/AuthButtons";
 import ScrollLink from "../components/ScrollLink";
 import { getQuizPacks } from "../services/quizPack.service";
@@ -37,14 +37,29 @@ export default async function Home() {
           </Link>
 
           <div className="hidden items-center gap-10 text-lg font-medium text-foreground/80 md:flex">
-            <ScrollLink targetId="quizzes" className="transition hover:text-gold">
+            <ScrollLink
+              targetId="quizzes"
+              className="group relative flex items-center gap-1.5 py-1 transition hover:text-gold"
+            >
+              <BookOpen className="h-4 w-4" />
               Quizzes
+              <span className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gold transition-all duration-300 group-hover:w-full" />
             </ScrollLink>
-            <ScrollLink targetId="quizzes" className="transition hover:text-gold">
+            <ScrollLink
+              targetId="quizzes"
+              className="group relative flex items-center gap-1.5 py-1 transition hover:text-gold"
+            >
+              <Swords className="h-4 w-4" />
               Game Modes
+              <span className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gold transition-all duration-300 group-hover:w-full" />
             </ScrollLink>
-            <Link href="/leaderboard" className="transition hover:text-gold">
+            <Link
+              href="/leaderboard"
+              className="group relative flex items-center gap-1.5 py-1 transition hover:text-gold"
+            >
+              <Trophy className="h-4 w-4" />
               Leaderboard
+              <span className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gold transition-all duration-300 group-hover:w-full" />
             </Link>
           </div>
 
@@ -89,7 +104,7 @@ export default async function Home() {
         {/* Mascot — anchored to the bottom edge, pulled in closer to the text */}
         <div className="pointer-events-none absolute inset-0 z-[5] hidden lg:flex">
           <div className="mx-auto flex w-full max-w-7xl items-end justify-end px-6">
-            <div className="relative h-[68vh] w-[38rem] max-w-[46vw]">
+            <div className="relative h-[62vh] w-[35rem] max-w-[43vw]">
               {/* warm gold ambient glow behind the mascot */}
               <div className="absolute inset-x-0 bottom-0 top-1/4 rounded-full bg-gold/30 blur-[100px]" />
               <Image
@@ -232,13 +247,13 @@ export default async function Home() {
 
       {/* ── Footer ──────────────────────────────────────── */}
       <footer className="bg-hero-dark">
-        <div className="mx-auto max-w-7xl px-6 py-8">
+        <div className="w-full px-8 py-8">
           <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
             <span className="font-display text-glow flex items-center gap-1 text-2xl text-foreground">
               <Image src="/images/logo.png" alt="" width={52} height={52} />
               CRICK<span className="text-gold">CLASH</span>
             </span>
-            <span className="text-xs text-foreground/40">
+            <span className="text-xs text-foreground/60">
               © {new Date().getFullYear()} CrickClash. Not affiliated with the
               PCB or ICC.
             </span>
