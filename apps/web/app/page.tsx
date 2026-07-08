@@ -9,7 +9,6 @@ const quizPacks = [
     id: "90s-legends",
     title: "90s Legends",
     description: "Wasim, Waqar, Saeed Anwar — the golden generation.",
-    difficulty: "Medium",
     questions: 20,
     plays: 4821,
     accent: "from-emerald-800/80",
@@ -18,7 +17,6 @@ const quizPacks = [
     id: "world-cup-nights",
     title: "World Cup Nights",
     description: "From MCG '92 to the T20 thrillers. Relive every night.",
-    difficulty: "Hard",
     questions: 25,
     plays: 6310,
     accent: "from-yellow-800/70",
@@ -27,7 +25,6 @@ const quizPacks = [
     id: "psl-trivia",
     title: "PSL Trivia",
     description: "Franchises, finals and last-over drama since 2016.",
-    difficulty: "Easy",
     questions: 15,
     plays: 9204,
     accent: "from-teal-800/80",
@@ -36,7 +33,6 @@ const quizPacks = [
     id: "pak-india-rivalry",
     title: "The Rivalry",
     description: "Pakistan vs India — the matches that stopped time.",
-    difficulty: "Hard",
     questions: 20,
     plays: 11876,
     accent: "from-orange-900/70",
@@ -45,7 +41,6 @@ const quizPacks = [
     id: "captains-corner",
     title: "Captains' Corner",
     description: "Imran to Babar — leaders, decisions, legacies.",
-    difficulty: "Medium",
     questions: 18,
     plays: 3542,
     accent: "from-lime-900/80",
@@ -54,18 +49,11 @@ const quizPacks = [
     id: "record-breakers",
     title: "Record Breakers",
     description: "Fastest, highest, youngest — Pakistan's record books.",
-    difficulty: "Easy",
     questions: 15,
     plays: 5127,
     accent: "from-amber-900/70",
   },
 ];
-
-const difficultyStyles: Record<string, string> = {
-  Easy: "bg-pitch-bright/20 text-pitch-bright border-pitch-bright/40",
-  Medium: "bg-gold/15 text-gold border-gold/40",
-  Hard: "bg-ember/15 text-ember border-ember/40",
-};
 
 export default function Home() {
   return (
@@ -239,16 +227,9 @@ export default function Home() {
                   className={`absolute inset-0 bg-gradient-to-br ${pack.accent} to-transparent opacity-40`}
                 />
                 <div className="relative">
-                  <div className="flex items-start justify-between">
-                    <h3 className="font-display text-lg text-foreground">
-                      {pack.title}
-                    </h3>
-                    <span
-                      className={`rounded-md border px-2 py-0.5 text-[11px] font-bold ${difficultyStyles[pack.difficulty]}`}
-                    >
-                      {pack.difficulty}
-                    </span>
-                  </div>
+                  <h3 className="font-display text-lg text-foreground">
+                    {pack.title}
+                  </h3>
                   <p className="mt-2 min-h-10 text-sm text-foreground/65">
                     {pack.description}
                   </p>
