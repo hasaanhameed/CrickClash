@@ -85,34 +85,16 @@ body {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent 45%);
   pointer-events: none;
 }
-/* left-to-right shine sweep on hover */
-.btn-gold::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  z-index: 2;
-  background: linear-gradient(
-    115deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.75) 50%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  transition: left 0.65s ease;
-  pointer-events: none;
-}
-.btn-gold:hover::before {
-  left: 125%;
+.btn-gold:hover {
+  filter: brightness(1.1);
 }
 
 /* Subtle button hover lift */
 .btn-game {
   transition:
     transform 0.15s ease,
-    box-shadow 0.15s ease;
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
 .btn-game:hover {
   transform: translateY(-1px);

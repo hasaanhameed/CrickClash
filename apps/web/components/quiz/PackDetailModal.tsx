@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { Flame, HelpCircle, Loader2, X } from "lucide-react";
+import { Clock, Flame, HelpCircle, Loader2, X, Zap } from "lucide-react";
 import { getQuizPackDetail } from "../../services/quizPack.service";
 import { packImages } from "../../lib/packImages";
 import type { QuizPack, QuizPackDetail } from "../../types/quizPack";
@@ -83,9 +83,7 @@ export default function PackDetailModal({
           <h2 className="font-display text-glow text-2xl text-gold">
             {pack.title}
           </h2>
-          <p className="mt-2 text-sm text-foreground/70">
-            {pack.description}
-          </p>
+          <p className="mt-2 text-sm text-foreground/70">{pack.description}</p>
 
           <div className="mt-4 flex items-center gap-5 text-sm text-muted">
             <span className="flex items-center gap-1.5">
@@ -100,12 +98,34 @@ export default function PackDetailModal({
 
           <div className="mt-6 rounded-lg border border-foreground/10 bg-hero-dark/30 p-4">
             <h3 className="font-display text-sm text-gold">HOW IT WORKS</h3>
-            <ul className="mt-3 space-y-2 text-sm text-foreground/70">
-              <li>• You get 30 seconds to answer each question.</li>
-              <li>• Faster correct answers earn more points.</li>
-              <li>
-                • Harder questions are worth more — Easy: 10pts, Medium:
-                20pts, Hard: 30pts.
+
+            <p className="mt-3 text-xs tracking-wide text-foreground/50 uppercase">
+              Points per question
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <span className="rounded-md border border-pitch-bright/40 bg-pitch-bright/10 px-3 py-1 text-xs text-pitch-bright">
+                Easy · 10 pts
+              </span>
+              <span className="rounded-md border border-gold/40 bg-gold/10 px-3 py-1 text-xs text-gold">
+                Medium · 20 pts
+              </span>
+              <span className="rounded-md border border-ember/40 bg-ember/10 px-3 py-1 text-xs text-ember">
+                Hard · 30 pts
+              </span>
+            </div>
+
+            <ul className="mt-4 space-y-2.5 text-sm text-foreground/70">
+              <li className="flex items-center gap-2.5">
+                <Clock className="h-4 w-4 shrink-0 text-gold" />
+                30 seconds to answer each question
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Zap className="h-4 w-4 shrink-0 text-gold" />
+                Faster answers earn more — 50% to 100% of the points above
+              </li>
+              <li className="flex items-center gap-2.5">
+                <X className="h-4 w-4 shrink-0 text-gold" />
+                Wrong answers earn 0 points, no matter how fast
               </li>
             </ul>
           </div>
@@ -131,9 +151,7 @@ export default function PackDetailModal({
             type="button"
             className="btn-game btn-gold font-display mt-6 w-full cursor-pointer rounded-md py-3 text-lg text-foreground"
           >
-            <span className="text-glow relative z-10">
-              ENTER THE ARENA →
-            </span>
+            <span className="text-glow relative z-10">ENTER THE ARENA</span>
           </button>
         </div>
       </div>
