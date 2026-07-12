@@ -38,12 +38,12 @@ export default function PackDetailModal({
       />
 
       <div className="relative z-10 max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-gold/30 bg-surface-raised shadow-2xl">
-        <div className="relative h-40">
+        <div className="relative h-64">
           <Image
             src={packImages[pack.slug]}
             alt={pack.title}
             fill
-            className="object-cover"
+            className="object-cover object-top"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-surface-raised via-surface-raised/20 to-transparent" />
           <button
@@ -77,7 +77,7 @@ export default function PackDetailModal({
           <div className="mt-6 rounded-lg border border-foreground/10 bg-hero-dark/30 p-4">
             <h3 className="font-display text-sm text-gold">HOW IT WORKS</h3>
             <ul className="mt-3 space-y-2 text-sm text-foreground/70">
-              <li>• Answer each question before the clock runs out.</li>
+              <li>• You get 30 seconds to answer each question.</li>
               <li>• Faster correct answers earn more points.</li>
               <li>
                 • Harder questions are worth more — Easy: 10pts, Medium:
@@ -108,11 +108,11 @@ export default function PackDetailModal({
           </div>
 
           <button
-            disabled
-            className="btn-game btn-gold font-display mt-6 w-full rounded-md py-3 text-lg text-foreground disabled:opacity-70"
+            type="button"
+            className="btn-game btn-gold font-display mt-6 w-full rounded-md py-3 text-lg text-foreground"
           >
             <span className="text-glow relative z-10">
-              START (coming soon)
+              ENTER THE ARENA →
             </span>
           </button>
         </div>

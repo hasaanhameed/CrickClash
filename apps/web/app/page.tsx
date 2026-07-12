@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpen, Trophy } from "lucide-react";
+import { BookOpen, Swords, Trophy } from "lucide-react";
 import AuthButtons from "../components/auth/AuthButtons";
 import ScrollLink from "../components/ScrollLink";
 import QuizPackGrid from "../components/quiz/QuizPackGrid";
