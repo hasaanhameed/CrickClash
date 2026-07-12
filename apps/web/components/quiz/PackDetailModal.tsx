@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Flame, HelpCircle, X } from "lucide-react";
 import { getQuizPackDetail } from "../../services/quizPack.service";
@@ -29,7 +30,7 @@ export default function PackDetailModal({
       }, {})
     : null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* blurred backdrop over the homepage behind it */}
       <div
@@ -117,6 +118,7 @@ export default function PackDetailModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
