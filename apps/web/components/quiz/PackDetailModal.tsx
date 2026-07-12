@@ -73,7 +73,7 @@ export default function PackDetailModal({
           <button
             onClick={onClose}
             aria-label="Close"
-            className="absolute top-4 right-4 rounded-full bg-hero-dark/60 p-1.5 text-foreground/80 transition hover:text-foreground"
+            className="absolute top-4 right-4 cursor-pointer rounded-full bg-hero-dark/60 p-1.5 text-foreground/80 transition hover:text-foreground"
           >
             <X className="h-5 w-5" />
           </button>
@@ -129,7 +129,7 @@ export default function PackDetailModal({
 
           <button
             type="button"
-            className="btn-game btn-gold font-display mt-6 w-full rounded-md py-3 text-lg text-foreground"
+            className="btn-game btn-gold font-display mt-6 w-full cursor-pointer rounded-md py-3 text-lg text-foreground"
           >
             <span className="text-glow relative z-10">
               ENTER THE ARENA →

@@ -201,10 +201,13 @@ export default async function Home() {
       <footer className="bg-hero-dark">
         <div className="w-full px-8 py-8">
           <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
-            <span className="font-display text-glow flex items-center gap-1 text-2xl text-foreground">
+            <Link
+              href="/"
+              className="font-display text-glow flex items-center gap-1 text-2xl text-foreground"
+            >
               <Image src="/images/logo.png" alt="" width={52} height={52} />
               CRICK<span className="text-gold">CLASH</span>
-            </span>
+            </Link>
             <span className="text-xs text-foreground/60">
               © {new Date().getFullYear()} CrickClash. Not affiliated with the
               PCB or ICC.

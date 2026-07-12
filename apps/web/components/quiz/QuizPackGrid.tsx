@@ -21,7 +21,7 @@ export default function QuizPackGrid({ quizPacks }: QuizPackGridProps) {
           <button
             key={pack.id}
             onClick={() => setSelectedPack(pack)}
-            className="card-game group relative overflow-hidden rounded-xl border border-foreground/10 bg-surface-raised text-left hover:border-gold/60"
+            className="card-game group relative cursor-pointer overflow-hidden rounded-xl border border-foreground/10 bg-surface-raised text-left hover:border-gold/60"
           >
             <div className="relative h-40 overflow-hidden">
               <Image
