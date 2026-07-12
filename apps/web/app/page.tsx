@@ -4,16 +4,7 @@ import { BookOpen, Flame, Swords, Trophy } from "lucide-react";
 import AuthButtons from "../components/auth/AuthButtons";
 import ScrollLink from "../components/ScrollLink";
 import { getQuizPacks } from "../services/quizPack.service";
-
-// Purely visual — backend doesn't (and shouldn't) store card artwork paths
-const packImages: Record<string, string> = {
-  "90s-legends": "/images/90s-legends.png",
-  "world-cup-nights": "/images/worldcup.png",
-  "psl-trivia": "/images/psl.png",
-  "pak-india-rivalry": "/images/pakvsindia.png",
-  "captains-corner": "/images/captains.png",
-  "record-breakers": "/images/records.png",
-};
+import { packImages } from "../lib/packImages";
 
 export default async function Home() {
   const quizPacks = await getQuizPacks();
