@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { Flame, HelpCircle, X } from "lucide-react";
+import { Flame, HelpCircle, Loader2, X } from "lucide-react";
 import { getQuizPackDetail } from "../../services/quizPack.service";
 import { packImages } from "../../lib/packImages";
 import type { QuizPack, QuizPackDetail } from "../../types/quizPack";
@@ -32,12 +32,26 @@ export default function PackDetailModal({
     };
   }, []);
 
-  const difficultyCounts = detail
-    ? detail.questions.reduce<Record<string, number>>((acc, q) => {
-        acc[q.difficulty] = (acc[q.difficulty] ?? 0) + 1;
-        return acc;
-      }, {})
-    : null;
+  if (!detail) {
+    return createPortal(
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div
+          className="absolute inset-0 bg-hero-dark/70 backdrop-blur-sm"
+          onClick={onClose}
+        />
+        <Loader2 className="relative z-10 h-10 w-10 animate-spin text-gold" />
+      </div>,
+      document.body,
+    );
+  }
+
+  const difficultyCounts = detail.questions.reduce<Record<string, number>>(
+    (acc, q) => {
+      acc[q.difficulty] = (acc[q.difficulty] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -100,21 +114,17 @@ export default function PackDetailModal({
             <h3 className="font-display text-sm text-gold">
               DIFFICULTY BREAKDOWN
             </h3>
-            {!difficultyCounts ? (
-              <p className="mt-2 text-sm text-foreground/50">Loading...</p>
-            ) : (
-              <div className="mt-3 flex flex-wrap gap-3 text-sm">
-                <span className="rounded-md border border-pitch-bright/40 bg-pitch-bright/10 px-3 py-1 text-pitch-bright">
-                  Easy: {difficultyCounts.EASY ?? 0}
-                </span>
-                <span className="rounded-md border border-gold/40 bg-gold/10 px-3 py-1 text-gold">
-                  Medium: {difficultyCounts.MEDIUM ?? 0}
-                </span>
-                <span className="rounded-md border border-ember/40 bg-ember/10 px-3 py-1 text-ember">
-                  Hard: {difficultyCounts.HARD ?? 0}
-                </span>
-              </div>
-            )}
+            <div className="mt-3 flex flex-wrap gap-3 text-sm">
+              <span className="rounded-md border border-pitch-bright/40 bg-pitch-bright/10 px-3 py-1 text-pitch-bright">
+                Easy: {difficultyCounts.EASY ?? 0}
+              </span>
+              <span className="rounded-md border border-gold/40 bg-gold/10 px-3 py-1 text-gold">
+                Medium: {difficultyCounts.MEDIUM ?? 0}
+              </span>
+              <span className="rounded-md border border-ember/40 bg-ember/10 px-3 py-1 text-ember">
+                Hard: {difficultyCounts.HARD ?? 0}
+              </span>
+            </div>
           </div>
 
           <button
