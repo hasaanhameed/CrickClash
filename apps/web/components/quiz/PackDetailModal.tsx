@@ -23,6 +23,15 @@ export default function PackDetailModal({
     getQuizPackDetail(pack.slug).then(setDetail);
   }, [pack.slug]);
 
+  // Lock the page's scroll while this modal is open
+  useEffect(() => {
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, []);
+
   const difficultyCounts = detail
     ? detail.questions.reduce<Record<string, number>>((acc, q) => {
         acc[q.difficulty] = (acc[q.difficulty] ?? 0) + 1;
