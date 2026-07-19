@@ -18,14 +18,18 @@ cd apps/api && npm install
 cd ../web && npm install
 ```
 
-**2. Set up environment variables** — copy the example files and fill in your own values:
+**2. Set up environment variables**
 
+Create `apps/api/.env`:
 ```
-cd apps/api && cp .env.example .env
-cd ../web && cp .env.local.example .env.local
+DATABASE_URL="postgresql://crickclash:crickclash@localhost:5433/crickclash"
+JWT_SECRET="any-random-string-for-local-dev"
 ```
 
-`apps/api/.env` needs a `JWT_SECRET` — any random string works for local dev.
+Create `apps/web/.env.local`:
+```
+NEXT_PUBLIC_API_URL="http://localhost:3000"
+```
 
 **3. Start Postgres** (from the project root):
 
