@@ -14,14 +14,13 @@ Hasaan (experienced with FastAPI, SQLAlchemy, React, Docker, PostgreSQL) plus a 
 - **Balance of driving**: for genuinely new patterns/scaffolding, let the human type/run it so it sticks. For iterative work once a pattern is established (styling, repeated CRUD-shaped code, refinements), Claude can implement directly — this is how the frontend work actually went in practice, and it's fine to keep doing that.
 - **Follow real industry conventions** — see below. "The way real teams do it" matters here, not just the fastest hack.
 
-## Tech stack & architecture
+## Tech stack
 
 - **Monorepo**: `apps/api` (NestJS) + `apps/web` (Next.js), no Nx/Turborepo — kept deliberately simple.
-- **Backend**: NestJS, Prisma (multi-file schema under `prisma/schema/`, one file per domain), PostgreSQL (Docker, host port **5433** — moved off 5432 due to a local conflict on Hasaan's machine, adjust `docker-compose.yml`/`.env` if a collaborator hits the same issue), JWT auth via Passport.
+- **Backend**: NestJS, Prisma, PostgreSQL (Docker, host port **5433** — moved off 5432 due to a local conflict on Hasaan's machine, adjust `docker-compose.yml`/`.env` if a collaborator hits the same issue), JWT auth via Passport.
 - **Frontend**: Next.js App Router, TypeScript, Tailwind v4 (CSS-first, no `tailwind.config.js` — see `@theme inline` in `globals.css`), React Context for global auth state.
-- **Folder conventions**:
-  - Backend: one folder per feature (`auth/`, `quiz-packs/`) with `module`/`controller`/`service`, plus `dto/`, `strategies/`, `guards/`, `decorators/` subfolders once a feature needs more than one of that type.
-  - Frontend: `components/` (grouped into feature subfolders once >1 related file), `services/` (API calls), `lib/` (shared config like the axios instance), `types/`, `contexts/`, `hooks/`.
+
+**File/folder structure for both apps is fixed — see `STRUCTURE.md` at the project root before creating any new file.** Don't improvise a new convention; find the matching case there.
 
 ## Known gotchas (hit repeatedly during development)
 
