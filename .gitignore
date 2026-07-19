@@ -40,6 +40,3 @@ Thumbs.db
 # Testing / coverage
 coverage/
 
-# Local-only project notes
-CLAUDE.md
-
