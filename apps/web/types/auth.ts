@@ -21,4 +21,5 @@ export interface LoginPayload {
 export interface CurrentUser {
   userId: string;
   username: string;
+  streak: number;
 }
