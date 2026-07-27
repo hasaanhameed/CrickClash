@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { LogOut, Medal, Star } from "lucide-react";
+import { Flame, LogOut, Medal, Star } from "lucide-react";
 import type { CurrentUser } from "../../types/auth";
 
 interface ProfileMenuProps {
@@ -43,7 +43,7 @@ export default function ProfileMenu({ user, logout }: ProfileMenuProps) {
         onClick={() => setMenuOpen((open) => !open)}
         className="flex cursor-pointer items-center gap-3 border-b-2 border-transparent py-1 transition hover:border-gold/50"
       >
-        <div className="relative h-12 w-12 overflow-hidden rounded-full">
+        <div className="relative h-14 w-14 overflow-hidden rounded-full ring-2 ring-gold/50">
           <Image
             src="/images/helmet.png"
             alt=""
@@ -51,7 +51,7 @@ export default function ProfileMenu({ user, logout }: ProfileMenuProps) {
             className="object-contain p-1 drop-shadow-[0_0_10px_rgba(232,181,58,0.8)]"
           />
         </div>
-        <span className="font-display text-glow text-xl text-gold">
+        <span className="font-display text-glow text-2xl text-gold">
           {user.username}
         </span>
       </button>
@@ -67,6 +67,18 @@ export default function ProfileMenu({ user, logout }: ProfileMenuProps) {
             </span>
             <span className="font-display text-glow text-lg text-gold">
               {totalPoints.toLocaleString()}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between border-t border-gold/10 px-4 py-3.5 transition hover:bg-gold/5">
+            <span className="font-display text-glow flex items-center gap-2.5 text-sm text-gold">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gold/10">
+                <Flame className="h-4 w-4 text-gold" />
+              </div>
+              Streak
+            </span>
+            <span className="font-display text-glow text-lg text-gold">
+              {user.streak} {user.streak === 1 ? "day" : "days"}
             </span>
           </div>
 
