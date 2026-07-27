@@ -55,4 +55,15 @@ export class AuthService {
 
     return { accessToken };
   }
+
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+    return {
+      userId: user.id,
+      username: user.username,
+      streak: user.streak,
+    };
+  }
 }
