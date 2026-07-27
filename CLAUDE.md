@@ -2,7 +2,7 @@
 
 ## What this is
 
-A real-time Pakistan cricket trivia platform, built by Hasaan and a collaborator. Core modes: curated **Quiz Packs** (built), **Quick Match** 1v1 real-time battles (not built yet), **Daily Challenge** solo async mode (not built yet).
+A real-time Pakistan cricket trivia platform, built by Hasaan and a collaborator. Core modes: curated **Quiz Packs** (built), **Quick Match** 1v1 real-time battles (not built yet), **Daily Challenge** solo async mode (built).
 
 ## Who's building this
 
@@ -32,15 +32,15 @@ Hasaan (experienced with FastAPI, SQLAlchemy, React, Docker, PostgreSQL) plus a 
 
 ## Current state
 
-- **Auth**: register/login/JWT/guards on the backend, fully wired on the frontend (`AuthContext`, modals, persisted session, profile chip in nav).
+- **Auth**: register/login/JWT/guards on the backend, fully wired on the frontend (`AuthContext`, modals, persisted session, profile chip in nav). `/auth/me` fetches the live user row (not just the JWT payload), so it can return real fields like `streak`.
 - **QuizPack + Question models**: built, with a small **starter seed** of cricket trivia (2 questions/pack) — facts are not yet verified against a real source (e.g. ESPNcricinfo) and need real research before this is production content.
 - **Homepage**: hero, game mode tiles, quiz pack cards → clicking a pack opens `PackDetailModal` (portal-based, blurred backdrop, fetches full detail client-side).
-- **Scoring system (designed, not yet implemented in gameplay logic)**: base points by difficulty (Easy 10 / Medium 20 / Hard 30), 30-second timer per question, correct answers scale from 50%–100% of base value depending on answer speed, wrong answers = 0.
+- **Daily Challenge (solo async mode)**: built end-to-end. Backend: `DailyChallenge` (date + a date-seeded deterministic shuffle of 5 question IDs from the shared `Question` pool, generated lazily on first request per day) + `DailyChallengeAttempt` (one per user per day, enforced by a DB unique constraint) models; `GET /daily-challenge/today` and `POST /daily-challenge/submit`, both behind `JwtAuthGuard`. Frontend: `/play/daily` — rules screen → one-question-at-a-time quiz → results, styled with a shared gold/glow "quiz component" look (`quiz-background.png` header band on each card). Real `streak` field added to `User`, updated on submit, shown in the profile menu.
+- **Scoring**: Daily Challenge uses flat difficulty-based points (Easy 10 / Medium 20 / Hard 30, wrong = 0) — implemented and live. The fancier speed-based scaling (30s timer per question, 50%–100% of base value depending on answer speed) described in earlier designs is **deferred to Quick Match**, since it needs a trustworthy server-side timer that only makes sense with real-time gameplay.
 
 ## Not built yet
 
-- Quick Match real-time gameplay (NestJS Gateway + Socket.io, matchmaking, live scoring) — this is the core real-time feature and the biggest remaining piece.
-- Daily Challenge.
+- Quick Match real-time gameplay (NestJS Gateway + Socket.io, matchmaking, live scoring, speed-based scoring) — this is the core real-time feature and the biggest remaining piece.
 - The "Enter the Arena" button in the pack detail modal is currently a styled no-op — not wired to real gameplay yet.
 - Real, verified question content beyond the starter seed.
 - Deployment.
