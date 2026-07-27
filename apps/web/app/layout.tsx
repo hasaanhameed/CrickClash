@@ -15,7 +15,7 @@ const rubik = Rubik({
 });
 
 export const metadata: Metadata = {
-  title: "CrickClash — Pakistan Cricket Quiz Arena",
+  title: "CrickClash",
   description:
     "Real-time Pakistan cricket trivia battles. Face off 1v1, chase daily streaks, and climb the leaderboard.",
 };

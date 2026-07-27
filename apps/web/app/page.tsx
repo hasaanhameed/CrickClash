@@ -16,15 +16,14 @@ export default async function Home() {
         <nav className="flex w-full items-center justify-between px-8 py-6">
           <Link
             href="/"
-            className="font-display flex items-center gap-1 text-4xl text-foreground"
+            className="font-display text-glow flex items-center gap-4 text-4xl text-foreground"
           >
-            <Image
-              src="/images/logo.png"
-              alt=""
-              width={72}
-              height={72}
-            />
-            CRICK<span className="text-gold">CLASH</span>
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-gold via-gold-deep to-gold/50 shadow-[0_0_26px_rgba(232,181,58,0.55)]">
+              <Image src="/images/logo.png" alt="" width={58} height={58} />
+            </div>
+            <span>
+              CRICK<span className="text-gold">CLASH</span>
+            </span>
           </Link>
 
           <div className="hidden items-center gap-10 text-lg font-medium text-foreground/80 md:flex">
