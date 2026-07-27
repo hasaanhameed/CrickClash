@@ -83,9 +83,12 @@ export class DailyChallengeService {
       };
     }
 
-    const questions = await this.prisma.question.findMany({
-      where: { id: { in: challenge.questionIds } },
-    });
+    const [questions, user] = await Promise.all([
+      this.prisma.question.findMany({
+        where: { id: { in: challenge.questionIds } },
+      }),
+      this.prisma.user.findUniqueOrThrow({ where: { id: userId } }),
+    ]);
     const questionsById = new Map(questions.map((q) => [q.id, q]));
 
     // `id: { in: [...] }` doesn't preserve array order, so re-sort by
@@ -99,6 +102,7 @@ export class DailyChallengeService {
       date: challenge.date,
       alreadyAttempted: false as const,
       questions: orderedQuestions,
+      streak: user.streak,
     };
   }
 
@@ -124,11 +128,17 @@ export class DailyChallengeService {
     const results = challenge.questionIds.map((id) => {
       const question = questionsById.get(id)!;
       const correct = answers[id] === question.correctAnswer;
+      const pointsAwarded = correct ? POINTS_BY_DIFFICULTY[question.difficulty] : 0;
       if (correct) {
-        score += POINTS_BY_DIFFICULTY[question.difficulty];
+        score += pointsAwarded;
         correctCount++;
       }
-      return { questionId: id, correct, correctAnswer: question.correctAnswer };
+      return {
+        questionId: id,
+        correct,
+        correctAnswer: question.correctAnswer,
+        pointsAwarded,
+      };
     });
 
     const user = await this.prisma.user.findUniqueOrThrow({
