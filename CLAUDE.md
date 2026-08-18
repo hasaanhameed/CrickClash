@@ -44,3 +44,13 @@ Hasaan (experienced with FastAPI, SQLAlchemy, React, Docker, PostgreSQL) plus a 
 - The "Enter the Arena" button in the pack detail modal is currently a styled no-op — not wired to real gameplay yet.
 - Real, verified question content beyond the starter seed.
 - Deployment.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub issues on `hasaanhameed/CrickClash`, using the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
