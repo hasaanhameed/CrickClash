@@ -7,4 +7,30 @@ model QuizPack {
   createdAt   DateTime @default(now())
 
   questions   Question[]
+  matches     QuizPackMatch[]
 }
+
+
+enum QuizPackMatchStatus {
+  IN_PROGRESS
+  COMPLETED
+  FORFEITED
+  ABANDONED
+}
+
+model QuizPackMatch {
+  id           String              @id @default(uuid())
+  quizPackId   String
+  quizPack     QuizPack            @relation(fields: [quizPackId], references: [id])
+  player1Id    String
+  player1      User                @relation("Player1Matches", fields: [player1Id], references: [id])
+  player2Id    String
+  player2      User                @relation("Player2Matches", fields: [player2Id], references: [id])
+  player1Score Int                 @default(0)
+  player2Score Int                 @default(0)
+  winnerId     String?
+  status       QuizPackMatchStatus @default(IN_PROGRESS)
+  createdAt    DateTime            @default(now())
+  completedAt  DateTime?
+}
+

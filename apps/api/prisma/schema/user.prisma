@@ -6,4 +6,6 @@ model User {
   lastChallengeDate      DateTime?                @db.Date
   createdAt              DateTime                 @default(now())
   dailyChallengeAttempts DailyChallengeAttempt[]
+  matchesAsPlayer1       QuizPackMatch[]          @relation("Player1Matches")
+  matchesAsPlayer2       QuizPackMatch[]          @relation("Player2Matches")
 }
