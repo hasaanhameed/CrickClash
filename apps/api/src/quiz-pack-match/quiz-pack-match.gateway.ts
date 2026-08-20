@@ -1,34 +1,37 @@
 import {
   WebSocketGateway,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
+  WebSocketServer,
+  OnGatewayInit,
 } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway({ cors: { origin: true } })
-export class QuizPackMatchGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+export class QuizPackMatchGateway implements OnGatewayInit {
+  @WebSocketServer()
+  server!: Server;
+
   constructor(private readonly jwtService: JwtService) {}
 
-  async handleConnection(client: Socket) {
-    const token = client.handshake.auth?.token as string | undefined;
+  afterInit(server: Server) {
+    server.use(async (socket: Socket, next) => {
+      const token = socket.handshake.auth?.token as string | undefined;
 
-    if (!token) {
-      client.disconnect();
-      return;
-    }
+      if (!token) {
+        return next(new Error('Unauthorized'));
+      }
 
-    try {
-      const payload = await this.jwtService.verifyAsync<{
-        sub: string;
-        username: string;
-      }>(token);
-      client.data.user = { userId: payload.sub, username: payload.username };
-    } catch {
-      client.disconnect();
-    }
+      try {
+        const payload = await this.jwtService.verifyAsync<{
+          sub: string;
+          username: string;
+        }>(token);
+        socket.data.user = { userId: payload.sub, username: payload.username };
+        next();
+      } catch {
+        next(new Error('Unauthorized'));
+      }
+    });
   }
 
   handleDisconnect(client: Socket) {
