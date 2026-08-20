@@ -27,7 +27,7 @@ Rules:
 
 ## Prisma schema (`apps/api/prisma/schema/`)
 
-- One `.prisma` file per domain model, named after it in kebab-case: `user.prisma`, `question.prisma`, `quiz-pack.prisma`.
+- One `.prisma` file per domain, named after its primary model in kebab-case: `user.prisma`, `question.prisma`, `quiz-pack.prisma`. A model that only exists to support another (e.g. an attempt/join/child record) lives in its parent's file rather than getting its own — e.g. `DailyChallengeAttempt` lives in `daily-challenge.prisma`, `QuizPackMatch` lives in `quiz-pack.prisma`.
 - `schema/schema.prisma` holds only the `generator` and `datasource` blocks — never add models to it.
 - `prisma/migrations/` is auto-generated — never hand-edited.
 - `prisma/seed.ts` is the single seed entrypoint, registered via `migrations.seed` in `prisma.config.ts`.
