@@ -1,21 +1,40 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { QuizPackMatch } from '@prisma/client';
+import { Injectable, NotFoundException, OnModuleDestroy } from '@nestjs/common';
+import { QuizPackMatch, QuizPackMatchStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { ClockService } from '../clock/clock.service';
+
+/** How long a player waits for an opponent before the search gives up. */
+export const QUEUE_TIMEOUT_MS = 2 * 60 * 1000;
+
+/** Called when a player's wait expires without an opponent turning up. */
+export type QueueTimeoutCallback = () => void;
 
 export type JoinQueueResult =
-  { status: 'queued' } | { status: 'matched'; match: QuizPackMatch };
+  | { status: 'queued' }
+  | { status: 'matched'; match: QuizPackMatch }
+  | { status: 'already-engaged'; packSlug: string; packTitle: string };
 
 @Injectable()
-export class QuizPackMatchService {
+export class QuizPackMatchService implements OnModuleDestroy {
   // Waiting players per pack, oldest first. Deliberately in-memory and
   // single-instance — only formed matches are persisted, so a restart
   // just means anyone waiting has to queue again. See README's
   // "Known limitations" for the scaling tradeoff this represents.
   private readonly queues = new Map<string, string[]>();
 
-  constructor(private readonly prisma: PrismaService) {}
+  // Pending give-up timers, keyed by the waiting player.
+  private readonly queueTimers = new Map<string, NodeJS.Timeout>();
 
-  async joinQueue(userId: string, packSlug: string): Promise<JoinQueueResult> {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly clock: ClockService,
+  ) {}
+
+  async joinQueue(
+    userId: string,
+    packSlug: string,
+    onTimeout: QueueTimeoutCallback,
+  ): Promise<JoinQueueResult> {
     const pack = await this.prisma.quizPack.findUnique({
       where: { slug: packSlug },
     });
@@ -24,22 +43,25 @@ export class QuizPackMatchService {
       throw new NotFoundException('Quiz pack not found');
     }
 
-    const waiting = this.queues.get(pack.id) ?? [];
-
-    // Re-queuing while already waiting for this pack is a no-op — without
-    // this a user could be paired against themselves.
-    if (waiting.includes(userId)) {
-      return { status: 'queued' };
+    // One search or match at a time. This also covers re-queuing for the pack
+    // you're already waiting on, which would otherwise pair you with yourself.
+    const engagement = await this.findCurrentEngagement(userId);
+    if (engagement) {
+      return { status: 'already-engaged', ...engagement };
     }
 
+    const waiting = this.queues.get(pack.id) ?? [];
     const opponentId = waiting.shift();
 
     if (opponentId === undefined) {
       this.queues.set(pack.id, [userId]);
+      this.startTimeout(userId, onTimeout);
       return { status: 'queued' };
     }
 
     this.queues.set(pack.id, waiting);
+    // The opponent is no longer waiting, so their give-up timer is moot.
+    this.cancelTimeout(opponentId);
 
     // FIFO: whoever waited longer takes the player1 slot.
     const match = await this.prisma.quizPackMatch.create({
@@ -53,7 +75,19 @@ export class QuizPackMatchService {
     return { status: 'matched', match };
   }
 
+  // Pending give-up timers would otherwise keep the process alive for up to
+  // QUEUE_TIMEOUT_MS after shutdown is requested.
+  onModuleDestroy(): void {
+    for (const handle of this.queueTimers.values()) {
+      this.clock.clearTimeout(handle);
+    }
+    this.queueTimers.clear();
+    this.queues.clear();
+  }
+
   leaveQueue(userId: string): void {
+    this.cancelTimeout(userId);
+
     for (const [packId, waiting] of this.queues) {
       const remaining = waiting.filter((id) => id !== userId);
       if (remaining.length === waiting.length) continue;
@@ -64,5 +98,58 @@ export class QuizPackMatchService {
         this.queues.set(packId, remaining);
       }
     }
+  }
+
+  /** The pack this player is already queued for or mid-match on, if any. */
+  private async findCurrentEngagement(
+    userId: string,
+  ): Promise<{ packSlug: string; packTitle: string } | undefined> {
+    const queuedPackId = this.findQueuedPackId(userId);
+
+    if (queuedPackId !== undefined) {
+      const pack = await this.prisma.quizPack.findUniqueOrThrow({
+        where: { id: queuedPackId },
+      });
+      return { packSlug: pack.slug, packTitle: pack.title };
+    }
+
+    const activeMatch = await this.prisma.quizPackMatch.findFirst({
+      where: {
+        status: QuizPackMatchStatus.IN_PROGRESS,
+        OR: [{ player1Id: userId }, { player2Id: userId }],
+      },
+      include: { quizPack: true },
+    });
+
+    if (!activeMatch) return undefined;
+
+    return {
+      packSlug: activeMatch.quizPack.slug,
+      packTitle: activeMatch.quizPack.title,
+    };
+  }
+
+  private findQueuedPackId(userId: string): string | undefined {
+    for (const [packId, waiting] of this.queues) {
+      if (waiting.includes(userId)) return packId;
+    }
+    return undefined;
+  }
+
+  private startTimeout(userId: string, onTimeout: QueueTimeoutCallback): void {
+    const handle = this.clock.setTimeout(() => {
+      this.leaveQueue(userId);
+      onTimeout();
+    }, QUEUE_TIMEOUT_MS);
+
+    this.queueTimers.set(userId, handle);
+  }
+
+  private cancelTimeout(userId: string): void {
+    const handle = this.queueTimers.get(userId);
+    if (handle === undefined) return;
+
+    this.clock.clearTimeout(handle);
+    this.queueTimers.delete(userId);
   }
 }
