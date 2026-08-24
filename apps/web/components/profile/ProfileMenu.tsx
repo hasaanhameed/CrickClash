@@ -8,9 +8,10 @@ import type { CurrentUser } from "../../types/auth";
 interface ProfileMenuProps {
   user: CurrentUser;
   logout: () => void;
+  hideLogout?: boolean;
 }
 
-export default function ProfileMenu({ user, logout }: ProfileMenuProps) {
+export default function ProfileMenu({ user, logout, hideLogout }: ProfileMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -92,15 +93,17 @@ export default function ProfileMenu({ user, logout }: ProfileMenuProps) {
             <span className="font-display text-sm text-gold">{rank}</span>
           </div>
 
-          <button
-            onClick={logout}
-            className="font-display text-glow flex w-full cursor-pointer items-center gap-2.5 border-t border-gold/10 px-4 py-3.5 text-left text-sm text-gold transition hover:bg-ember/10 hover:text-ember"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground/5">
-              <LogOut className="h-4 w-4" />
-            </div>
-            Log out
-          </button>
+          {!hideLogout && (
+            <button
+              onClick={logout}
+              className="font-display text-glow flex w-full cursor-pointer items-center gap-2.5 border-t border-gold/10 px-4 py-3.5 text-left text-sm text-gold transition hover:bg-ember/10 hover:text-ember"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground/5">
+                <LogOut className="h-4 w-4" />
+              </div>
+              Log out
+            </button>
+          )}
         </div>
       )}
     </div>

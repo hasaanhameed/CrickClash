@@ -11,7 +11,11 @@ const successMessages: Record<"login" | "register", string> = {
   login: "Welcome back — dive into the action!",
 };
 
-export default function AuthButtons() {
+interface AuthButtonsProps {
+  hideLogout?: boolean;
+}
+
+export default function AuthButtons({ hideLogout }: AuthButtonsProps = {}) {
   const { user, isLoadingUser, logout } = useAuth();
   const [modal, setModal] = useState<"login" | "register" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -32,7 +36,7 @@ export default function AuthButtons() {
   return (
     <>
       {user ? (
-        <ProfileMenu user={user} logout={logout} />
+        <ProfileMenu user={user} logout={logout} hideLogout={hideLogout} />
       ) : (
         <div className="flex items-center gap-4">
           <button
