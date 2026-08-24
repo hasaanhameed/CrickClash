@@ -30,6 +30,34 @@ const difficultyStyles = {
 
 const optionLetters = ["A", "B", "C", "D", "E", "F"];
 
+// In-progress answers survive a reload/crash/reboot (localStorage is
+// disk-backed, not session-only) so a user doesn't lose progress or have
+// to re-see already-answered questions. Keyed by date so a stale entry
+// from a previous day is never picked up.
+const PROGRESS_STORAGE_KEY = "crickclash:dailyChallengeProgress";
+
+function loadSavedAnswers(date: string): Record<string, string> | null {
+  try {
+    const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw) as { date: string; answers: Record<string, string> };
+    return saved.date === date ? saved.answers : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveAnswers(date: string, answers: Record<string, string>) {
+  localStorage.setItem(
+    PROGRESS_STORAGE_KEY,
+    JSON.stringify({ date, answers }),
+  );
+}
+
+function clearSavedAnswers() {
+  localStorage.removeItem(PROGRESS_STORAGE_KEY);
+}
+
 export default function DailyChallengePage() {
   const { user, isLoadingUser } = useAuth();
   const [today, setToday] = useState<TodayChallengeResponse | null>(null);
@@ -42,8 +70,29 @@ export default function DailyChallengePage() {
 
   useEffect(() => {
     if (!user) return;
-    getTodayChallenge().then(setToday);
+    getTodayChallenge().then((response) => {
+      setToday(response);
+      if (!response.alreadyAttempted) {
+        const saved = loadSavedAnswers(response.date);
+        if (saved && Object.keys(saved).length > 0) {
+          setAnswers(saved);
+          setUiStep("quiz");
+        }
+      } else {
+        // Stale progress from an attempt that's already been submitted
+        // elsewhere (e.g. another tab) — nothing left to resume.
+        clearSavedAnswers();
+      }
+    });
   }, [user]);
+
+  // Persist answers as they're picked, so a reload/crash/reboot resumes
+  // from where the user left off instead of losing progress.
+  useEffect(() => {
+    if (!today || today.alreadyAttempted) return;
+    if (Object.keys(answers).length === 0) return;
+    saveAnswers(today.date, answers);
+  }, [today, answers]);
 
   // Logging out mid-attempt would leave the in-progress score with nowhere
   // to land, so the log out option is hidden for the duration of the quiz.
@@ -55,6 +104,7 @@ export default function DailyChallengePage() {
     try {
       const response = await submitDailyChallenge(answers);
       setResult(response);
+      clearSavedAnswers();
     } catch {
       // Most likely a stray double-submit (e.g. two open tabs) — fall back
       // to whatever the server now says is true rather than showing an error.
@@ -120,6 +170,17 @@ export default function DailyChallengePage() {
           <QuizView
             questions={today.questions}
             answers={answers}
+            initialIndex={Math.max(
+              0,
+              (() => {
+                const firstUnanswered = today.questions.findIndex(
+                  (q) => !answers[q.id],
+                );
+                return firstUnanswered === -1
+                  ? today.questions.length - 1
+                  : firstUnanswered;
+              })(),
+            )}
             onAnswer={(questionId, option) =>
               setAnswers((prev) => ({ ...prev, [questionId]: option }))
             }
@@ -238,17 +299,19 @@ function ProgressStepper({
 function QuizView({
   questions,
   answers,
+  initialIndex,
   onAnswer,
   onSubmit,
   submitting,
 }: {
   questions: { id: string; difficulty: keyof typeof difficultyStyles; text: string; options: string[] }[];
   answers: Record<string, string>;
+  initialIndex: number;
   onAnswer: (questionId: string, option: string) => void;
   onSubmit: () => void;
   submitting: boolean;
 }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const question = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
   const hasAnswered = Boolean(answers[question.id]);
