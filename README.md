@@ -69,3 +69,7 @@ cd apps/web && npm run dev
 - `npx prisma studio` (from `apps/api`) — browse/edit the database directly
 - `docker exec -it crickclash-postgres-1 psql -U crickclash -d crickclash` — raw SQL shell into Postgres
 - After any Prisma schema change: `npx prisma migrate dev --name <description>` **then** `npx prisma generate` (see `CLAUDE.md` gotchas — these are two separate steps)
+
+## Known limitations
+
+- **Quiz Pack Arena's matchmaking queue is in-memory and single-instance only** — a plain data structure inside the NestJS process, no Redis or message broker. This is a deliberate simplicity-over-scaling tradeoff for where the project is right now, not an oversight: it means the API can only ever run as **one instance** in production. If we move to horizontal scaling later, this queue will need to move to a shared layer that multiple instances can coordinate through — Redis is the natural choice at that point, not before.
