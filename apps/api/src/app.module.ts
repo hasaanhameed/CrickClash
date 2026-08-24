@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { QuizPacksModule } from './quiz-packs/quiz-packs.module';
 import { DailyChallengeModule } from './daily-challenge/daily-challenge.module';
 import { QuizPackMatchModule } from './quiz-pack-match/quiz-pack-match.module';
+import { ClockModule } from './clock/clock.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, QuizPacksModule, DailyChallengeModule, QuizPackMatchModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, QuizPacksModule, DailyChallengeModule, QuizPackMatchModule, ClockModule],
   controllers: [AppController],
   providers: [AppService],
 })
