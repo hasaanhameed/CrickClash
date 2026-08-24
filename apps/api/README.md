@@ -80,6 +80,8 @@ $ npm run test:cov
 
 Timer-driven logic (queue timeouts, question countdowns, reconnect grace periods) should go through the injectable `ClockService` (`src/clock/`) rather than calling `setTimeout`/`Date.now()` directly, so tests can fast-forward through them with Jest's fake timers instead of actually waiting — see `src/clock/clock.service.spec.ts` for the pattern.
 
+Tests run serially (`maxWorkers: 1`) because they share one test database and each cleans up by truncating it — in parallel, one spec file would wipe another's rows mid-run. If the suite ever grows slow enough for that to hurt, the upgrade path is a database per Jest worker rather than re-enabling parallelism as-is.
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.

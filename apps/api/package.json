@@ -88,6 +88,7 @@
     "testEnvironment": "node",
     "setupFiles": [
       "<rootDir>/../test/jest.setup.ts"
-    ]
+    ],
+    "maxWorkers": 1
   }
 }
