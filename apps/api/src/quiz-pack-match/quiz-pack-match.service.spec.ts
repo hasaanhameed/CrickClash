@@ -87,7 +87,7 @@ describe('QuizPackMatchService', () => {
     });
 
     it('pairs the second player into a persisted in-progress match', async () => {
-      const pack = await seedPack();
+      const pack = await seedPack('90s Legends');
       const alice = await seedUser();
       const bob = await seedUser();
 
@@ -98,8 +98,20 @@ describe('QuizPackMatchService', () => {
       if (result.status !== 'matched') return;
 
       expect(result.match).toMatchObject({
+        packSlug: pack.slug,
+        packTitle: '90s Legends',
+        // FIFO — Alice waited longer, so she is listed first
+        players: [
+          { userId: alice.id, username: alice.username },
+          { userId: bob.id, username: bob.username },
+        ],
+      });
+
+      const persisted = await prisma.quizPackMatch.findUniqueOrThrow({
+        where: { id: result.match.matchId },
+      });
+      expect(persisted).toMatchObject({
         quizPackId: pack.id,
-        // FIFO — Alice waited longer, so she takes the player1 slot
         player1Id: alice.id,
         player2Id: bob.id,
         player1Score: 0,
@@ -107,12 +119,21 @@ describe('QuizPackMatchService', () => {
         winnerId: null,
         status: 'IN_PROGRESS',
       });
+    });
 
-      const persisted = await prisma.quizPackMatch.findUniqueOrThrow({
-        where: { id: result.match.id },
-      });
-      expect(persisted.player1Id).toBe(alice.id);
-      expect(persisted.player2Id).toBe(bob.id);
+    it('never exposes player password hashes in the match summary', async () => {
+      const pack = await seedPack();
+      const alice = await seedUser();
+      const bob = await seedUser();
+
+      await service.joinQueue(alice.id, pack.slug, noop);
+      const result = await service.joinQueue(bob.id, pack.slug, noop);
+      if (result.status !== 'matched') throw new Error('expected a match');
+
+      expect(JSON.stringify(result.match)).not.toContain('hashed-password');
+      for (const player of result.match.players) {
+        expect(player).not.toHaveProperty('password');
+      }
     });
 
     it('pairs players in arrival order across successive matches', async () => {
@@ -135,14 +156,14 @@ describe('QuizPackMatchService', () => {
         return;
       }
 
-      expect([firstMatch.match.player1Id, firstMatch.match.player2Id]).toEqual([
+      expect(firstMatch.match.players.map((p) => p.userId)).toEqual([
         alice.id,
         bob.id,
       ]);
-      expect([
-        secondMatch.match.player1Id,
-        secondMatch.match.player2Id,
-      ]).toEqual([carol.id, dave.id]);
+      expect(secondMatch.match.players.map((p) => p.userId)).toEqual([
+        carol.id,
+        dave.id,
+      ]);
       expect(await prisma.quizPackMatch.count()).toBe(2);
     });
 
@@ -241,7 +262,7 @@ describe('QuizPackMatchService', () => {
       if (matched.status !== 'matched') throw new Error('expected a match');
 
       await prisma.quizPackMatch.update({
-        where: { id: matched.match.id },
+        where: { id: matched.match.matchId },
         data: { status: 'COMPLETED', completedAt: new Date() },
       });
 

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, OnModuleDestroy } from '@nestjs/common';
-import { QuizPackMatch, QuizPackMatchStatus } from '@prisma/client';
+import { QuizPackMatchStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { ClockService } from '../clock/clock.service';
 
@@ -9,9 +9,22 @@ export const QUEUE_TIMEOUT_MS = 2 * 60 * 1000;
 /** Called when a player's wait expires without an opponent turning up. */
 export type QueueTimeoutCallback = () => void;
 
+/**
+ * What both players are told when a match forms. Deliberately built by hand
+ * rather than passing the database row through — the `User` rows behind it
+ * carry password hashes.
+ */
+export interface MatchSummary {
+  matchId: string;
+  packSlug: string;
+  packTitle: string;
+  /** In pairing order: the longer-waiting player first. */
+  players: { userId: string; username: string }[];
+}
+
 export type JoinQueueResult =
   | { status: 'queued' }
-  | { status: 'matched'; match: QuizPackMatch }
+  | { status: 'matched'; match: MatchSummary }
   | { status: 'already-engaged'; packSlug: string; packTitle: string };
 
 @Injectable()
@@ -70,9 +83,26 @@ export class QuizPackMatchService implements OnModuleDestroy {
         player1Id: opponentId,
         player2Id: userId,
       },
+      // Select rather than include — a bare `include` would pull the players'
+      // password hashes along with them.
+      include: {
+        player1: { select: { id: true, username: true } },
+        player2: { select: { id: true, username: true } },
+      },
     });
 
-    return { status: 'matched', match };
+    return {
+      status: 'matched',
+      match: {
+        matchId: match.id,
+        packSlug: pack.slug,
+        packTitle: pack.title,
+        players: [
+          { userId: match.player1.id, username: match.player1.username },
+          { userId: match.player2.id, username: match.player2.username },
+        ],
+      },
+    };
   }
 
   // Pending give-up timers would otherwise keep the process alive for up to
