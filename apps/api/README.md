@@ -56,6 +56,15 @@ $ docker compose up -d postgres-test
 $ DATABASE_URL="postgresql://crickclash:crickclash@localhost:5434/crickclash_test" npx prisma migrate deploy
 ```
 
+Also create `apps/api/.env.test` (gitignored — every machine needs its own copy, same as `apps/api/.env`):
+
+```
+DATABASE_URL="postgresql://crickclash:crickclash@localhost:5434/crickclash_test"
+JWT_SECRET="test-secret"
+```
+
+Without this file, `DATABASE_URL` is undefined when tests run — don't skip it, since `test/prisma-test.util.ts`'s cleanup runs `TRUNCATE ... CASCADE` and needs to be certain it's pointed at the test database, not whatever `DATABASE_URL` happens to be set to elsewhere.
+
 Then:
 
 ```bash
