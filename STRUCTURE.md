@@ -24,6 +24,7 @@ Rules:
 - Subfolders (`dto/`, `strategies/`, `guards/`, `decorators/`) only get created once a feature actually has more than one file of that kind — don't pre-create empty ones.
 - Shared/global pieces (e.g. `PrismaService`) live in their own top-level module (`src/prisma/`), imported by any feature module that needs them.
 - `src/app.module.ts` / `src/main.ts` are app wiring only — no feature logic there.
+- A feature's own unit tests live next to it as `*.spec.ts` inside its feature folder (Nest CLI scaffolds these automatically alongside the file they test). Shared test infrastructure that isn't feature-specific — e2e specs, Jest setup files, test-database helpers — lives in the top-level `apps/api/test/` folder instead (e.g. `test/jest.setup.ts`, `test/prisma-test.util.ts`).
 
 ## Prisma schema (`apps/api/prisma/schema/`)
 
