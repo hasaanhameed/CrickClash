@@ -46,8 +46,20 @@ $ npm run start:prod
 
 ## Run tests
 
+Unit tests hit a real, disposable test Postgres database (not a mocked Prisma client) — see `test/prisma-test.util.ts`. One-time setup, and after any Prisma schema change:
+
 ```bash
-# unit tests
+# start the test database (separate container/port from your dev database)
+$ docker compose up -d postgres-test
+
+# apply migrations to it
+$ DATABASE_URL="postgresql://crickclash:crickclash@localhost:5434/crickclash_test" npx prisma migrate deploy
+```
+
+Then:
+
+```bash
+# unit tests — automatically loads apps/api/.env.test via test/jest.setup.ts
 $ npm run test
 
 # e2e tests
@@ -56,6 +68,8 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+Timer-driven logic (queue timeouts, question countdowns, reconnect grace periods) should go through the injectable `ClockService` (`src/clock/`) rather than calling `setTimeout`/`Date.now()` directly, so tests can fast-forward through them with Jest's fake timers instead of actually waiting — see `src/clock/clock.service.spec.ts` for the pattern.
 
 ## Deployment
 
