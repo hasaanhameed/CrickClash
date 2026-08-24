@@ -45,6 +45,11 @@ export default function DailyChallengePage() {
     getTodayChallenge().then(setToday);
   }, [user]);
 
+  // Logging out mid-attempt would leave the in-progress score with nowhere
+  // to land, so the log out option is hidden for the duration of the quiz.
+  const quizInProgress =
+    !!today && !today.alreadyAttempted && uiStep === "quiz" && !result;
+
   async function handleSubmit() {
     setSubmitting(true);
     try {
@@ -86,7 +91,7 @@ export default function DailyChallengePage() {
             CRICK<span className="text-gold">CLASH</span>
           </span>
         </Link>
-        <AuthButtons />
+        <AuthButtons hideLogout={quizInProgress} />
       </header>
 
       <div className="relative z-10 flex flex-1 items-start justify-center overflow-hidden px-4 pt-3 pb-4">
