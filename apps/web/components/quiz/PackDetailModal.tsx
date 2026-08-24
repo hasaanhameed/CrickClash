@@ -3,10 +3,23 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { Clock, Flame, HelpCircle, Loader2, X, Zap } from "lucide-react";
+import {
+  Clock,
+  Flame,
+  HelpCircle,
+  Loader2,
+  Search,
+  Swords,
+  X,
+  Zap,
+} from "lucide-react";
 import { getQuizPackDetail } from "../../services/quizPack.service";
 import { packImages } from "../../lib/packImages";
+import { useMatchQueue } from "../../hooks/useMatchQueue";
+import { useAuth } from "../../contexts/AuthContext";
+import Toast from "../Toast";
 import type { QuizPack, QuizPackDetail } from "../../types/quizPack";
+import type { QueueStatus } from "../../types/quizPackMatch";
 
 interface PackDetailModalProps {
   pack: QuizPack;
@@ -18,6 +31,21 @@ export default function PackDetailModal({
   onClose,
 }: PackDetailModalProps) {
   const [detail, setDetail] = useState<QuizPackDetail | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const { user } = useAuth();
+  const { status, elapsedSeconds, search, cancel, reset } = useMatchQueue(
+    pack.slug,
+  );
+
+  // The socket would be rejected at the handshake without a token anyway —
+  // catching it here turns a silent failure into an invitation to sign up.
+  const handleSearch = () => {
+    if (!user) {
+      setToast("Log in to step into the arena! 🏏");
+      return;
+    }
+    search();
+  };
 
   useEffect(() => {
     getQuizPackDetail(pack.slug).then(setDetail);
@@ -147,15 +175,118 @@ export default function PackDetailModal({
             </div>
           </div>
 
-          <button
-            type="button"
-            className="btn-game btn-gold font-display mt-6 w-full cursor-pointer rounded-md py-3 text-lg text-foreground"
-          >
-            <span className="text-glow relative z-10">ENTER THE ARENA</span>
-          </button>
+          <div className="mt-6">
+            <ArenaAction
+              status={status}
+              elapsedSeconds={elapsedSeconds}
+              onSearch={handleSearch}
+              onCancel={cancel}
+              onDismiss={reset}
+            />
+          </div>
         </div>
       </div>
+
+      {toast && <Toast message={toast} onDone={() => setToast(null)} />}
     </div>,
     document.body,
+  );
+}
+
+function formatElapsed(totalSeconds: number) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
+/**
+ * The "Enter the Arena" button and everything it turns into — the button is
+ * replaced in place by the live search, then by whatever the search came to.
+ */
+function ArenaAction({
+  status,
+  elapsedSeconds,
+  onSearch,
+  onCancel,
+  onDismiss,
+}: {
+  status: QueueStatus;
+  elapsedSeconds: number;
+  onSearch: () => void;
+  onCancel: () => void;
+  onDismiss: () => void;
+}) {
+  if (status.phase === "searching") {
+    return (
+      <div className="rounded-md border border-gold/40 bg-hero-dark/40 p-4 text-center">
+        <div className="flex items-center justify-center gap-2.5 text-gold">
+          <Search className="h-4 w-4 animate-pulse" />
+          <span className="font-display text-glow text-sm tracking-wide">
+            FINDING AN OPPONENT
+          </span>
+        </div>
+        <p className="font-display text-glow mt-2 text-3xl text-gold tabular-nums">
+          {formatElapsed(elapsedSeconds)}
+        </p>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="btn-game font-display mt-4 w-full cursor-pointer rounded-md border border-ember/50 bg-ember/10 py-2.5 text-sm tracking-wide text-ember transition hover:border-ember hover:bg-ember/20"
+        >
+          <span className="relative z-10">CANCEL SEARCH</span>
+        </button>
+      </div>
+    );
+  }
+
+  if (status.phase === "matched") {
+    const opponents = status.match.players.map((p) => p.username).join("  vs  ");
+    return (
+      <div className="rounded-md border border-pitch-bright/50 bg-pitch-bright/10 p-4 text-center">
+        <div className="flex items-center justify-center gap-2 text-pitch-bright">
+          <Swords className="h-5 w-5" />
+          <span className="font-display text-glow text-sm tracking-wide">
+            OPPONENT FOUND
+          </span>
+        </div>
+        <p className="font-display mt-2 text-lg text-foreground">{opponents}</p>
+        {/* Gameplay itself is not built yet — this is where the match begins. */}
+        <p className="mt-2 text-xs text-foreground/50">
+          The match screen is coming soon.
+        </p>
+      </div>
+    );
+  }
+
+  if (status.phase !== "idle") {
+    const message =
+      status.phase === "timed-out"
+        ? "No opponent found — want to try again?"
+        : status.phase === "already-engaged"
+          ? `You're already in the arena on ${status.packTitle}.`
+          : status.message;
+
+    return (
+      <div className="rounded-md border border-ember/40 bg-ember/10 p-4 text-center">
+        <p className="text-sm text-foreground/80">{message}</p>
+        <button
+          type="button"
+          onClick={status.phase === "timed-out" ? onSearch : onDismiss}
+          className="font-display mt-3 cursor-pointer text-sm text-gold underline-offset-4 transition hover:underline"
+        >
+          {status.phase === "timed-out" ? "SEARCH AGAIN" : "OK"}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onSearch}
+      className="btn-game btn-gold font-display w-full cursor-pointer rounded-md py-3 text-lg text-foreground"
+    >
+      <span className="text-glow relative z-10">ENTER THE ARENA</span>
+    </button>
   );
 }
