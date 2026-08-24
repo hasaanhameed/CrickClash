@@ -7,7 +7,13 @@ export interface JwtPayload {
   username: string;
 }
 
-export function mapJwtPayloadToUser(payload: JwtPayload) {
+/** The shape attached to every authenticated request and socket. */
+export interface AuthenticatedUser {
+  userId: string;
+  username: string;
+}
+
+export function mapJwtPayloadToUser(payload: JwtPayload): AuthenticatedUser {
   return { userId: payload.sub, username: payload.username };
 }
 
@@ -20,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload) {
+  validate(payload: JwtPayload): AuthenticatedUser {
     return mapJwtPayloadToUser(payload);
   }
 }
