@@ -36,7 +36,7 @@ export default async function Home() {
               <span className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gold transition-all duration-300 group-hover:w-full" />
             </ScrollLink>
             <ScrollLink
-              targetId="quizzes"
+              targetId="modes"
               className="group relative flex items-center gap-1.5 py-1 transition hover:text-gold"
             >
               <Swords className="h-4 w-4" />

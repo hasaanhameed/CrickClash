@@ -15,25 +15,9 @@ export default function ScrollLink({
 }: ScrollLinkProps) {
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const target = document.getElementById(targetId);
-    if (!target) return;
-
-    const startY = window.scrollY;
-    const endY = target.getBoundingClientRect().top + startY;
-    const duration = 700;
-    const startTime = performance.now();
-
-    const easeInOutQuad = (t: number) =>
-      t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-
-    function step(now: number) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      window.scrollTo(0, startY + (endY - startY) * easeInOutQuad(progress));
-      if (progress < 1) requestAnimationFrame(step);
-    }
-
-    requestAnimationFrame(step);
+    document
+      .getElementById(targetId)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
