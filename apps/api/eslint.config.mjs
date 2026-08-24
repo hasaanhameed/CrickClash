@@ -30,6 +30,13 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
       "prettier/prettier": ["error", { endOfLine: "auto" }],
+      // Stripping a sensitive field by destructuring it away
+      // (`const { password, ...rest } = user`) is the intended idiom here —
+      // the discarded binding is deliberately unused. See CLAUDE.md gotchas.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { ignoreRestSiblings: true },
+      ],
     },
   },
 );
