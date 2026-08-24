@@ -3,8 +3,7 @@ import { QuizPackMatch } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
 export type JoinQueueResult =
-  | { status: 'queued' }
-  | { status: 'matched'; match: QuizPackMatch };
+  { status: 'queued' } | { status: 'matched'; match: QuizPackMatch };
 
 @Injectable()
 export class QuizPackMatchService {
