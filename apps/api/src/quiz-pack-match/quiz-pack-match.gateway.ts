@@ -6,13 +6,14 @@ import {
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import {
+  AuthenticatedUser,
   JwtPayload,
   mapJwtPayloadToUser,
 } from '../auth/strategies/jwt.strategy';
 
 /** What the handshake middleware stashes on every authenticated socket. */
 export interface SocketData {
-  user: { userId: string; username: string };
+  user: AuthenticatedUser;
 }
 
 export type AuthenticatedSocket = Socket<

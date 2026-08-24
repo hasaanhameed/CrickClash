@@ -128,7 +128,9 @@ export class DailyChallengeService {
     const results = challenge.questionIds.map((id) => {
       const question = questionsById.get(id)!;
       const correct = answers[id] === question.correctAnswer;
-      const pointsAwarded = correct ? POINTS_BY_DIFFICULTY[question.difficulty] : 0;
+      const pointsAwarded = correct
+        ? POINTS_BY_DIFFICULTY[question.difficulty]
+        : 0;
       if (correct) {
         score += pointsAwarded;
         correctCount++;
@@ -144,7 +146,11 @@ export class DailyChallengeService {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
     });
-    const streak = computeNewStreak(user.lastChallengeDate, challenge.date, user.streak);
+    const streak = computeNewStreak(
+      user.lastChallengeDate,
+      challenge.date,
+      user.streak,
+    );
 
     await this.prisma.$transaction([
       this.prisma.dailyChallengeAttempt.create({

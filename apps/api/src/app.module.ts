@@ -10,7 +10,15 @@ import { QuizPackMatchModule } from './quiz-pack-match/quiz-pack-match.module';
 import { ClockModule } from './clock/clock.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, QuizPacksModule, DailyChallengeModule, QuizPackMatchModule, ClockModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    AuthModule,
+    QuizPacksModule,
+    DailyChallengeModule,
+    QuizPackMatchModule,
+    ClockModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
