@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import {
@@ -9,7 +10,6 @@ import {
   HelpCircle,
   Loader2,
   Search,
-  Swords,
   X,
   Zap,
 } from "lucide-react";
@@ -17,6 +17,8 @@ import { getQuizPackDetail } from "../../services/quizPack.service";
 import { packImages } from "../../lib/packImages";
 import { useMatchQueue } from "../../hooks/useMatchQueue";
 import { useAuth } from "../../contexts/AuthContext";
+import MatchFoundCard from "../arena/MatchFoundCard";
+import { storeActiveMatch } from "../../lib/activeMatch";
 import Toast from "../Toast";
 import type { QuizPack, QuizPackDetail } from "../../types/quizPack";
 import type { QueueStatus } from "../../types/quizPackMatch";
@@ -33,9 +35,16 @@ export default function PackDetailModal({
   const [detail, setDetail] = useState<QuizPackDetail | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const { user } = useAuth();
+  const router = useRouter();
   const { status, elapsedSeconds, search, cancel, reset } = useMatchQueue(
     pack.slug,
   );
+
+  const startMatch = useCallback(() => {
+    if (status.phase !== "matched") return;
+    storeActiveMatch(status.match);
+    router.push(`/play/quiz-pack/${pack.slug}`);
+  }, [status, router, pack.slug]);
 
   // The socket would be rejected at the handshake without a token anyway —
   // catching it here turns a silent failure into an invitation to sign up.
@@ -68,6 +77,22 @@ export default function PackDetailModal({
           onClick={onClose}
         />
         <Loader2 className="relative z-10 h-10 w-10 animate-spin text-gold" />
+      </div>,
+      document.body,
+    );
+  }
+
+  if (status.phase === "matched") {
+    return createPortal(
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-hero-dark/70 backdrop-blur-sm" />
+        <div className="relative z-10 w-full max-w-md">
+          <MatchFoundCard
+            match={status.match}
+            packImage={packImages[pack.slug]}
+            onCountdownEnd={startMatch}
+          />
+        </div>
       </div>,
       document.body,
     );
@@ -210,7 +235,7 @@ function ArenaAction({
   onCancel,
   onDismiss,
 }: {
-  status: QueueStatus;
+  status: Exclude<QueueStatus, { phase: "matched" }>;
   elapsedSeconds: number;
   onSearch: () => void;
   onCancel: () => void;
@@ -218,14 +243,17 @@ function ArenaAction({
 }) {
   if (status.phase === "searching") {
     return (
-      <div className="rounded-md border border-gold/40 bg-hero-dark/40 p-4 text-center">
+      <div className="animate-arena-rise rounded-md border border-gold/40 bg-hero-dark/40 p-4 text-center">
         <div className="flex items-center justify-center gap-2.5 text-gold">
           <Search className="h-4 w-4 animate-pulse" />
           <span className="font-display text-glow text-sm tracking-wide">
             FINDING AN OPPONENT
           </span>
         </div>
-        <p className="font-display text-glow mt-2 text-3xl text-gold tabular-nums">
+        <p
+          key={elapsedSeconds}
+          className="font-display text-glow animate-arena-tick mt-2 text-3xl text-gold tabular-nums"
+        >
           {formatElapsed(elapsedSeconds)}
         </p>
         <button
@@ -239,25 +267,6 @@ function ArenaAction({
     );
   }
 
-  if (status.phase === "matched") {
-    const opponents = status.match.players.map((p) => p.username).join("  vs  ");
-    return (
-      <div className="rounded-md border border-pitch-bright/50 bg-pitch-bright/10 p-4 text-center">
-        <div className="flex items-center justify-center gap-2 text-pitch-bright">
-          <Swords className="h-5 w-5" />
-          <span className="font-display text-glow text-sm tracking-wide">
-            OPPONENT FOUND
-          </span>
-        </div>
-        <p className="font-display mt-2 text-lg text-foreground">{opponents}</p>
-        {/* Gameplay itself is not built yet — this is where the match begins. */}
-        <p className="mt-2 text-xs text-foreground/50">
-          The match screen is coming soon.
-        </p>
-      </div>
-    );
-  }
-
   if (status.phase !== "idle") {
     const message =
       status.phase === "timed-out"
@@ -267,7 +276,7 @@ function ArenaAction({
           : status.message;
 
     return (
-      <div className="rounded-md border border-ember/40 bg-ember/10 p-4 text-center">
+      <div className="animate-arena-rise rounded-md border border-ember/40 bg-ember/10 p-4 text-center">
         <p className="text-sm text-foreground/80">{message}</p>
         <button
           type="button"
