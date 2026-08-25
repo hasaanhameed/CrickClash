@@ -148,3 +148,111 @@ body {
 .animate-toast-out {
   animation: toast-out 0.25s ease-in forwards;
 }
+
+/* ── Arena motion ─────────────────────────────────────────────────────────
+   Shared entrance/feedback animations for the live match. Movement is kept to
+   opacity/translate/scale on plain (unclipped) elements, so none of it trips
+   the clip-path or overflow+radius rendering quirks noted elsewhere. */
+
+/* Cards arriving on screen: rise and settle */
+@keyframes arena-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-arena-rise {
+  animation: arena-rise 0.4s ease-out both;
+}
+
+/* Headline moment — "MATCH FOUND" landing with a bit of weight */
+@keyframes arena-slam {
+  0% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-arena-slam {
+  animation: arena-slam 0.45s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+}
+
+/* Each countdown number ticking over */
+@keyframes arena-tick {
+  0% {
+    opacity: 0.35;
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-arena-tick {
+  animation: arena-tick 0.35s ease-out;
+}
+
+/* Score panel confirming an answer landed */
+@keyframes arena-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-arena-pop {
+  animation: arena-pop 0.32s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+}
+
+/* Waiting-on-this-player breathing glow */
+@keyframes arena-breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.animate-arena-breathe {
+  animation: arena-breathe 1.6s ease-in-out infinite;
+}
+
+/* Staggered option entry, so answers cascade in rather than snapping */
+.arena-stagger > * {
+  animation: arena-rise 0.32s ease-out both;
+}
+.arena-stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.arena-stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.arena-stagger > *:nth-child(3) { animation-delay: 0.16s; }
+.arena-stagger > *:nth-child(4) { animation-delay: 0.22s; }
+.arena-stagger > *:nth-child(5) { animation-delay: 0.28s; }
+.arena-stagger > *:nth-child(6) { animation-delay: 0.34s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-arena-rise,
+  .animate-arena-slam,
+  .animate-arena-tick,
+  .animate-arena-pop,
+  .animate-arena-breathe,
+  .arena-stagger > * {
+    animation: none;
+  }
+}
